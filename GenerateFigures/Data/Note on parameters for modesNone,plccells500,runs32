@@ -1,0 +1,10 @@
+opt_C = 0.3
+opt_t = 1
+opt_f_I = 0.04/opt_t
+opt_f_p = opt_t/.0005
+
+GRID_CELLS = 1000
+PLC_CELLS = 500
+MODULES = 10
+MIN_PLCFLD_SIZE = .005
+mesh_pts min size = .0004
