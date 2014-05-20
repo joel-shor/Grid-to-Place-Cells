@@ -10,7 +10,7 @@ import logging
 
 from GridCells import GridNetwork
 from PlaceCells import PlaceCellNetwork
-from GenerateFigures.simulation_graph_funcs import _plot
+from GenerateFigures.graphFuncs import _plot
 from Inhibition import calc_inhib
 
 def _calculate_asymptotic_activity(acts, f_I, f_p, thresh, calc_inhib):
@@ -29,22 +29,6 @@ def _calculate_asymptotic_activity(acts, f_I, f_p, thresh, calc_inhib):
             inhibs[i,j] = inhib
     logging.info('Time to calculate asymptotic: %.3f', time.time()-s)
     return final_acts, inhibs
-
-class Param:
-    '''A class that conveniently holds the parameters.'''
-    modules = None
-    #min_plcfld_size = .05
-    min_plcfld_size = .005
-    #min_grid_size = .0001
-    #min_grid_size = .0004 # m**2
-    min_grid_size = .001 # m**2
-    C = 0.4
-    thresh = 1
-    f_I = 0.04/thresh
-    f_p = thresh/0.005
-    cell_factor = 2
-    plc_cells = 15
-    grd_cells = plc_cells*cell_factor
 
 def deriv(u,t, I, f_I, f_peak, thresh):
     act = [max(0,u0) for u0 in u]

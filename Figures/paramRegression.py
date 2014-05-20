@@ -17,11 +17,11 @@ mpl.rcParams['lines.linewidth'] = 3
 mpl.rcParams['axes.titlesize'] = 25
 plt.rc('text', usetex=True)
 
-SHOW = False
+SHOW = True # Show the graph or save it to file
 
 
 def load(runs, modes, plc_cells, size):
-    filename = 'Data/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
+    filename = 'Results/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
                                                         str(modes),
                                                         plc_cells,
                                                         runs)
@@ -113,9 +113,19 @@ def graph_poisson_parameter_regression(As1,As2):
     
     if not SHOW:
         plt.savefig('Figures/poisson_parameter_summary.png')
-    
 
-if __name__ == '__main__':
+def regr_bounds():
+    logging.basicConfig(level=logging.DEBUG)
+    
+    As500 = get_As(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
+    As1500 = get_As(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
+    
+    graph_poisson_parameters_w_bounds(As500, As1500)
+    #graph_poisson_parameter_regression(As500, As1500)
+    if SHOW:
+        plt.show()
+  
+def regr():
     logging.basicConfig(level=logging.DEBUG)
     
     As500 = get_As(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
@@ -127,3 +137,6 @@ if __name__ == '__main__':
         plt.show()
     
                 
+
+if __name__ == '__main__':
+    regr()

@@ -70,7 +70,7 @@ class PlaceCellNetwork:
 
 def generate_example_images():
     ''' Create images of place cell input for the paper. '''
-    from graph_funcs import _plot
+    from graphFuncs import _plot
     from GridCells import GridNetwork
     from matplotlib import pyplot as plt
 

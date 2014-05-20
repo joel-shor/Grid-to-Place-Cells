@@ -9,14 +9,15 @@ import logging
 from Cells.GridCells import GridNetwork
 from Cells.PlaceFields import PlaceField
 from Cells.PlaceCells import PlaceCellNetwork
-from Inhibition import calc_inhib
+from Simulation.Inhibition import calc_inhib
 #from InhibitionC import calc_inhib
 
 def run_simulation(params):
     ''' Completes a single run of the simulation for the given parameters.
         Returns the resulting map, units, and fields spatial statistics. '''
+    
     s=time.time()
-    p = params
+    pm = params
     maps = {'Sparsity':[],
             'Coverage':[],
             'Representation':[]}
@@ -24,10 +25,10 @@ def run_simulation(params):
              'Coverage':[]}
     fields = {'Area':[]}
 
-    grid_net = GridNetwork(p.grd_cells,p.min_grid_size,p.W,p.H,p.modules)
-    plc_net = PlaceCellNetwork(p.plc_cells,grid_net,wt_type='Monaco',C=p.C)
+    grid_net = GridNetwork(pm.grd_cells, pm.min_grid_size, pm.W,pm.H, pm.modules)
+    plc_net = PlaceCellNetwork(pm.plc_cells, grid_net, wt_type='Monaco', C=pm.C)
     acts = plc_net.activity()
-    final_acts, inhibs = _calculate_asymptotic_activity(acts,p.f_I,p.f_p,p.thresh)
+    final_acts, inhibs = _calculate_asymptotic_activity(acts, pm.f_I, pm.f_p, pm.thresh)
     
     # Plot the post inhibition activities
     '''
@@ -36,10 +37,10 @@ def run_simulation(params):
     
     mesh_pts = acts[0].shape[0]
     plc_fld_dat = []
-    for i in range(p.plc_cells):
+    for i in range(pm.plc_cells):
         flds = PlaceField.above_cutoff(final_acts[i])
-        num_flds, layout, fld_areas = PlaceField.check_size(flds,p.W,p.H,
-                                                            p.min_plcfld_size,mesh_pts)
+        num_flds, layout, fld_areas = PlaceField.check_size(flds,pm.W,pm.H,
+                                                            pm.min_plcfld_size,mesh_pts)
         #Finds pictures where size check matters
         '''
         test, _, _ = PlaceField.check_size(flds,p.W,p.H,0,mesh_pts)
@@ -77,7 +78,7 @@ def _calculate_asymptotic_activity(acts, f_I, f_p, thresh):
 
 def _plot_final_acts(X,Y,final_acts):
     '''Plots figures of activity after global inhibition'''
-    from GenerateFigures.simulation_graph_funcs import _plot
+    from Figures.graphFuncs import _plot
     from matplotlib import pyplot as plt
     for i in range(5):
         _plot(X,Y,final_acts[i],'Activity after inhibition')
@@ -85,7 +86,7 @@ def _plot_final_acts(X,Y,final_acts):
 
 def _plot_size_check_matters(X,Y,flds,layout):
     '''Plots figures where size check matters.'''
-    from GenerateFigures.simulation_graph_funcs import _plot
+    from Figures.graphFuncs import _plot
     from matplotlib import pyplot as plt
     _plot(X,Y,flds,None)
     _plot(X,Y,layout,None)

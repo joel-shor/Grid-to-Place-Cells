@@ -16,6 +16,7 @@ class GridCell:
     '''
     This is a single Grid Cell. It generates activity at x and y locations.
     '''
+    
     def __init__(self, length, rot, offsetx,offsety):
         ''' Length is the length between peaks. 
         Rot is the rotation from the origin. 
@@ -68,23 +69,4 @@ class GridNetwork:
         ''' Each grid cell output lies within [-.5, 1].'''
         return np.array([cell.activity(self.X,self.Y) for cell in self.net])
 
-
-def generate_example_images():
-    ''' Create images of grid cell activity for the paper. '''
-    
-    from graph_funcs import _plot
-    from matplotlib import pyplot as plt
-    
-    W = 4
-    for min_grid_size in [.01,.007,.005,.003,.001,.0001]:
-        grid_net = GridNetwork(1,min_grid_size,W,W)
-        _plot(grid_net.X,grid_net.Y,grid_net.activity()[0],None)
-        
-        cell = grid_net.net[0]
-        logging.info('len=%f, rot=%f, offx=%f, offy=%f',cell.length,cell.rot, 
-                                                           cell.offsetx, cell.offsety)
-    plt.show()
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    generate_example_images()
     

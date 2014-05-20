@@ -6,24 +6,8 @@ import time
 import cPickle
 import logging
 
-from simulation import run_simulation
-
-
-class Param:
-    '''A class that conveniently holds the parameters.'''
-    modules = None
-    #min_plcfld_size = .05
-    min_plcfld_size = .005
-    #min_grid_size = .0001
-    min_grid_size = .0004 # m**2
-    #min_grid_size = .01 # m**2
-    C = 0.4
-    thresh = 1
-    f_I = 0.04/thresh
-    f_p = thresh/0.005
-    cell_factor = 2
-    plc_cells = 100
-    grd_cells = 500
+from Simulation.simulation import run_simulation
+from params import Param as pm
 
 def combine(main, new):
     ''' Adds fields in dictionary 'new' to dictionary 'main'. '''
@@ -46,7 +30,7 @@ def run_experiment(trials):
     
     for rnd in range(trials):
         logging.info('Trial number %i:',rnd+1)
-        map_dat, unit_dat, fld_dat = run_simulation(Param)
+        map_dat, unit_dat, fld_dat = run_simulation(pm)
         combine(maps,map_dat)
         combine(units,unit_dat)
         combine(fields,fld_dat)
@@ -55,10 +39,10 @@ def run_experiment(trials):
     tot = {'maps':maps,
            'units':units,
            'fields':fields}
-    fn = 'exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(Param.L,
-                                                       str(Param.modules),
-                                                       Param.plc_cells,
-                                                       Param.grd_cells,
+    fn = 'exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(pm.L,
+                                                       str(pm.modules),
+                                                       pm.plc_cells,
+                                                       pm.grd_cells,
                                                        trials)
     cPickle.dump(tot,open(fn,'w'))
     logging.info('Finished an experiment: %.3f', time.time()-s)
@@ -66,17 +50,33 @@ def run_experiment(trials):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     
+    pm.modules = None
+    #min_plcfld_size = .05
+    pm.min_plcfld_size = .005
+    #min_grid_size = .0001
+    pm.min_grid_size = .0004 # m**2
+    #min_grid_size = .01 # m**2
+    pm.C = 0.4
+    pm.thresh = 1
+    pm.f_I = 0.04/pm.thresh
+    pm.f_p = pm.thresh/0.005
+    pm.plc_cells = 100
+    pm.grd_cells = 500
+    
+    pm.L = pm.H = pm.W = 1
+    pm.validate()
+
     # Profile
     '''
     import cProfile
-    Param.L=Param.W=Param.H=1
+    pm.L=pm.W=pm.H=1
     cProfile.run('run_experiment(trials=1)',sort='cumulative')
     import sys; sys.exit()'''
 
     # Actually run an experiment
-    for x in [1,2,3,4,5]:
-        Param.L=Param.W=Param.H=x
-        run_experiment(trials=10)
+    for x in [1]:
+        pm.L=pm.W=pm.H=x
+        run_experiment(trials=1)
         
         # Sends email updates if expiriments are running on a server.
         '''
