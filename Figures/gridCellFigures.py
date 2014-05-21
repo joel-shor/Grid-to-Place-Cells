@@ -9,9 +9,9 @@ def example():
     W = 4
     for min_grid_size in [.01,.007,.005,.003,.001,.0001]:
         grid_net = GridNetwork(1,min_grid_size,W,W)
-        _plot(grid_net.X,grid_net.Y,grid_net.activity()[0],None)
-        
-        cell = grid_net.net[0]
-        logging.info('len=%f, rot=%f, offx=%f, offy=%f',cell.length,cell.rot, 
-                                                           cell.offsetx, cell.offsety)
+        xx = grid_net.X[0]
+        yy = grid_net.Y[0]
+        act = grid_net.activity()[0]
+        _plot(xx,yy,act,None)
+
     plt.show()

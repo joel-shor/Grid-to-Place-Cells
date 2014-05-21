@@ -5,7 +5,12 @@ if __name__ == '__main__':
     parser.add_argument('graph_name',help='name of the graph to make',
                         choices=['grid',
                                  'regr',
-                                 'regr_bounds'])
+                                 'regr_bounds',
+                                 'spatial',
+                                 'fit',
+                                 'place',
+                                 'inhib',
+                                 'size'])
 
     nn = parser.parse_args().graph_name
     
@@ -15,5 +20,21 @@ if __name__ == '__main__':
     elif nn == 'regr':
         from Figures.paramRegression import regr
         regr()
-    elif nn == 'regr_nounds':
-        pass
+    elif nn == 'regr_bounds':
+        from Figures.paramRegression import regr_bounds
+        regr_bounds()
+    elif nn == 'spatial':
+        from Figures.spatialStatistics import spatial
+        spatial()
+    elif nn == 'fit':
+        from Figures.poissonFit import poisson_fit
+        poisson_fit()
+    elif nn == 'place':
+        from Figures.placeCellFigures import example as ex2
+        ex2()
+    elif nn == 'inhib':
+        from Figures.inhibFigures import example as ex3
+        ex3()
+    elif nn == 'size':
+        from Figures.sizeCheck import example as ex4
+        ex4()

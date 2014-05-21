@@ -1,8 +1,11 @@
 import logging
 import unittest
 
-class TestInhibition(unittest.TestCase):
-    pass
+from Cells.GridCells import GridNetwork
+
+class TestGridCells(unittest.TestCase):
+    def test_accuracy(self):
+        pass
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)

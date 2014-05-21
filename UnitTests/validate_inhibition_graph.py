@@ -9,7 +9,7 @@ import time
 import logging
 
 from GridCells import GridNetwork
-from PlaceCells import PlaceCellNetwork
+from PlaceCells import PlaceNetwork
 from GenerateFigures.graphFuncs import _plot
 from Inhibition import calc_inhib
 
@@ -41,7 +41,7 @@ def test_validity_of_inhib_calc():
     p=Param
 
     grid_net = GridNetwork(p.grd_cells,p.min_grid_size,p.W,p.H,p.modules)
-    plc_net = PlaceCellNetwork(p.plc_cells,grid_net,wt_type='Monaco',C=p.C)
+    plc_net = PlaceNetwork(p.plc_cells,grid_net,wt_type='Monaco',C=p.C)
     acts = plc_net.activity()
     final_acts_calc1, _ = _calculate_asymptotic_activity(acts,p.f_I,p.f_p,p.thresh,calc_inhib)
 

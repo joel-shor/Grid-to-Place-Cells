@@ -23,13 +23,13 @@ mpl.rcParams['lines.linewidth'] = 3
 mpl.rcParams['axes.titlesize'] = 25
 #mpl.rcParams['axes.titlesize'] = 25
 
-SHOW = False
+SHOW = True
 
 
 def load(runs, modes, plc_cells,side_len, type_of_dat, dat):
     ''' Load data file and return environment area, average, and standard deviation '''
     
-    filename = 'Data/exp results size%s,modes%s,plccells%d,runs%d'%(str(side_len),
+    filename = 'Results/exp results size%s,modes%s,plccells%d,runs%d'%(str(side_len),
                                                         str(modes),
                                                         plc_cells,
                                                         runs)
@@ -155,8 +155,7 @@ def generate_graphs_for_spatial_statistics(main, sub, y_unit):
         plt.savefig('Figures/'+main.capitalize().replace(' ','_')+'_'+sub+'.png')
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+def spatial():
     for (main, sub, y_unit) in [('units', 'Number of fields', 'Fields'),
                             ('units','Coverage', 'Proportion'),
                             ('maps', 'Sparsity', 'Proportion'),
@@ -166,5 +165,6 @@ if __name__ == '__main__':
         generate_graphs_for_spatial_statistics(main, sub, y_unit)
     if SHOW:
         plt.show()
+    
     
                 

@@ -60,8 +60,8 @@ if __name__ == '__main__':
     pm.thresh = 1
     pm.f_I = 0.04/pm.thresh
     pm.f_p = pm.thresh/0.005
-    pm.plc_cells = 100
-    pm.grd_cells = 500
+    pm.plc_cells = 500
+    pm.grd_cells = 1000
     
     pm.L = pm.H = pm.W = 1
     pm.validate()

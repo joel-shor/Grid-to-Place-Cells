@@ -1,5 +1,5 @@
 '''
-PlaceCellNetwork class takes a grid network, determines what connection
+PlaceNetwork class takes a grid network, determines what connection
 weights it wants, and calculates the activity of each place cell in the
 network.
 '''
@@ -18,7 +18,7 @@ class Weights:
         base = np.concatenate([np.random.rand(active),
                                np.zeros(grd_num-active)])
         mat_arr = [np.random.permutation(base) for _ in range(plc_num)]
-        return np.matrix(mat_arr)
+        return np.array(mat_arr)
     @staticmethod
     def MonacoUpdated(grd_num, plc_num, connectivity):
         ''' Creates a weight matrix based on the Monaco and Abbott paper,
@@ -28,7 +28,7 @@ class Weights:
         wts *= grd_num*connectivity/np.sum([wts.item(i) for i in range(grd_num)])
         return wts
 
-class PlaceCellNetwork:
+class PlaceNetwork:
     '''
     Generates weights connecting grid cells to place cells and calculates
     the resulting place cell activity.
@@ -37,11 +37,14 @@ class PlaceCellNetwork:
         self.grid_net = grid_net
         self.type = type
         self.C=C
+        if C is None:
+            logging.warning('PlaceNetwork.C is None')
         if wt_type == 'Monaco':
-            self.wts = Weights.Monaco(len(self.grid_net.net), N, C)
+            self.wts = Weights.Monaco(self.grid_net.N, N, C)
         elif wt_type == 'Monaco updated':
-            self.wts = Weights.MonacoUpdated(len(self.grid_net.net), N, C)
+            self.wts = Weights.MonacoUpdated(self.grid_net.N, N, C)
         else:
+            logging.warning('No weights generated.')
             self.wts = None
     
     def activity(self):
@@ -68,23 +71,19 @@ class PlaceCellNetwork:
             tot_act = tot_act[0]
         return tot_act
 
-def generate_example_images():
-    ''' Create images of place cell input for the paper. '''
-    from graphFuncs import _plot
-    from GridCells import GridNetwork
-    from matplotlib import pyplot as plt
-
-    W = 5
-    min_grid_size = .0001
-    grid_net = GridNetwork(50,min_grid_size,W,W)
-    plc_net = PlaceCellNetwork(50,grid_net,wt_type='Monaco updated',C=.4)
-
-    act = plc_net.activity()
-
-    for i in range(5):
-        _plot(grid_net.X,grid_net.Y,act[i],None)
-    plt.show()
     
 if __name__ == '__main__':
+    # Check speed of PlaceCells
     logging.basicConfig(level=logging.INFO)
-    generate_example_images()
+    from time import time as tm
+    from GridCells import GridNetwork
+    N = 1000
+    min_grid_size = 1
+    W=H=10
+    k = GridNetwork(N, min_grid_size,W,H)
+    s = tm()
+    for _ in range(10):
+        j = PlaceNetwork(500,k,'Monaco updated',.4)
+        j.activity()
+    print 'Time for 1:%.3f'%(tm()-s,)
+    

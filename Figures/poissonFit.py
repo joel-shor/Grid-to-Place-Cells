@@ -22,12 +22,12 @@ SHOW = True
 
 def load(runs, modes, plc_cells, size, grd_cells):
     if grd_cells is None:
-        filename = 'Data/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
+        filename = 'Results/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
                                                             str(modes),
                                                             plc_cells,
                                                             runs)
     else:
-        filename = 'Data/exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(str(size),
+        filename = 'Results/exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(str(size),
                                                             str(modes),
                                                             plc_cells,
                                                             grd_cells,
@@ -156,13 +156,10 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     if not SHOW:
         plt.savefig('Figures/Poisson_best_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs))
     
-        
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-
-    generate_graphs_for_total_poisson_comparison(runs=10,modes=None,plc_cells=25,grd_cells=500,side_lens=[1,2,3,4,5])
+def poisson_fit():     
+    #generate_graphs_for_total_poisson_comparison(runs=10,modes=None,plc_cells=25,grd_cells=500,side_lens=[1,2,3,4,5])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
-    #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
+    generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
     if SHOW: plt.show()
-                
+    
