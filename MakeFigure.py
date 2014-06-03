@@ -8,9 +8,10 @@ if __name__ == '__main__':
                                  'regr_bounds',
                                  'spatial',
                                  'fit',
-                                 'place',
+                                 'input',
                                  'inhib',
-                                 'size'])
+                                 'size',
+                                 'typical'])
 
     nn = parser.parse_args().graph_name
     
@@ -29,8 +30,8 @@ if __name__ == '__main__':
     elif nn == 'fit':
         from Figures.poissonFit import poisson_fit
         poisson_fit()
-    elif nn == 'place':
-        from Figures.placeCellFigures import example as ex2
+    elif nn == 'input':
+        from Figures.placeCellInputFigures import example as ex2
         ex2()
     elif nn == 'inhib':
         from Figures.inhibFigures import example as ex3
@@ -38,3 +39,6 @@ if __name__ == '__main__':
     elif nn == 'size':
         from Figures.sizeCheck import example as ex4
         ex4()
+    elif nn == 'typical':
+        from Figures.typicalInput import example as ex5
+        ex5()

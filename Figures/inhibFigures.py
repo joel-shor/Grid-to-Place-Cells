@@ -6,7 +6,9 @@ from Figures.graphFuncs import _plot
 import logging
 
 def example():
-    ''' Create images of place cell input for the paper. '''
+    ''' Create images of place cell output for the paper. 
+    
+        Called as python MakeFig.py inhib'''
     logging.basicConfig(level=logging.INFO)
     thresh = 1
     f_I = 0.04/thresh

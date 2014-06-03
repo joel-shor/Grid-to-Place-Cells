@@ -4,7 +4,10 @@ from Cells.GridCells import GridNetwork
 from Figures.graphFuncs import _plot
 
 def example():
-    ''' Create images of grid cell activity for the paper. '''
+    ''' Create images of grid cell activity for the paper. 
+    
+        Called as python MakeFig.py grid
+    '''
     
     W = 4
     for min_grid_size in [.01,.007,.005,.003,.001,.0001]:

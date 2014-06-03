@@ -31,6 +31,6 @@ def example():
         num_flds, layout, _ = PlaceField.check_size(flds,W,W,min_plcfld_size,mesh_pts)
         no_min, _, _ = PlaceField.check_size(flds,W,W,0,mesh_pts)
         if no_min != num_flds:
-            _plot(grid_net.X[0],grid_net.Y[0],flds,None)
-            _plot(grid_net.X[0],grid_net.Y[0],layout,None)
+            _plot(grid_net.X[0],grid_net.Y[0],flds,'Before size check')
+            _plot(grid_net.X[0],grid_net.Y[0],layout,'After size check')
             plt.show()

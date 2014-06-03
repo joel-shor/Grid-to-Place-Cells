@@ -7,10 +7,10 @@ import logging
 def example():
     ''' Create images of place cell input for the paper. '''
     logging.basicConfig(level=logging.INFO)
-    W = 5
+    W = 3
     min_grid_size = .0001
-    grid_net = GridNetwork(50,min_grid_size,W,W)
-    plc_net = PlaceNetwork(50,grid_net,wt_type='Monaco updated',C=.4)
+    grid_net = GridNetwork(1000,min_grid_size,W,W,modules=5)
+    plc_net = PlaceNetwork(500,grid_net,wt_type='Monaco updated',C=.4)
 
     act = plc_net.activity()
 

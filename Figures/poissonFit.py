@@ -5,10 +5,10 @@ that number of place fields)
 against the graph of (x vs Poisson(x)).
 '''
 
-import logging
-import cPickle
 from scipy.misc import factorial
 import numpy as np
+#from Results.load import load_old as load
+from Results.load import load_new as load
 
 import matplotlib as mpl
 mpl.rcParams['font.size'] = 22
@@ -20,28 +20,6 @@ plt.rc('text', usetex=True)
 
 SHOW = True
 
-def load(runs, modes, plc_cells, size, grd_cells):
-    if grd_cells is None:
-        filename = 'Results/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
-                                                            str(modes),
-                                                            plc_cells,
-                                                            runs)
-    else:
-        filename = 'Results/exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(str(size),
-                                                            str(modes),
-                                                            plc_cells,
-                                                            grd_cells,
-                                                            runs)
-    with open(filename,'r') as f:
-        txt = f.read()
-    
-    dat = cPickle.loads(txt)
-    
-    num_flds = dat['units']['Number of fields']
-    if len(num_flds) != runs*plc_cells: raise Exception
-    
-    return num_flds
-
 from scipy.optimize import fmin
 def calc_best_avg_A(runs, modes, plc_cells,side_lens, first_guess, grd_cells):
     '''
@@ -51,7 +29,7 @@ def calc_best_avg_A(runs, modes, plc_cells,side_lens, first_guess, grd_cells):
     # Read in all the data
     num_flds_all = {}
     for side_len in side_lens:
-        num_flds = np.array(load(runs,modes, plc_cells, side_len, grd_cells))
+        num_flds = np.array(load(modes, plc_cells, side_len, grd_cells,runs))
         x = []; y = []
         for num_fld in range(np.max(num_flds)+1):
             x.append(num_fld)
@@ -92,7 +70,7 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     max_num_flds = 0
     As= {}
     for side_len in side_lens:
-        num_flds = np.array(load(runs,modes, plc_cells, side_len,grd_cells))
+        num_flds = np.array(load(modes, plc_cells, side_len,grd_cells, runs))
         
         # Generate data curve that we hope looks Poisson
         x = []; y = []
@@ -154,12 +132,12 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     plt.ylabel('Proportion of Cell Population')
     plt.title('Best Poisson Fit')
     if not SHOW:
-        plt.savefig('Figures/Poisson_best_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs))
-    
+        plt.savefig('Figures/Poisson_best_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs)) 
 
 def poisson_fit():     
     #generate_graphs_for_total_poisson_comparison(runs=10,modes=None,plc_cells=25,grd_cells=500,side_lens=[1,2,3,4,5])
+    generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,grd_cells=1000,side_lens=[1,2,3])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
-    generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
+    #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
     if SHOW: plt.show()
     

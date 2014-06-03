@@ -3,6 +3,9 @@ Generates two graphs:
 1) A linear regression of the Poisson parameters
 2) A close up of the Poisson parameteres with error bounds
 
+Called as:
+
+python MakeFig.py regr
 '''
 
 import cPickle
@@ -17,20 +20,26 @@ mpl.rcParams['lines.linewidth'] = 3
 mpl.rcParams['axes.titlesize'] = 25
 plt.rc('text', usetex=True)
 
+from Results.load import load_old
+
 SHOW = True # Show the graph or save it to file
 
 
 def load(runs, modes, plc_cells, size):
-    filename = 'Results/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
+    filename = 'Results/old/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
                                                         str(modes),
                                                         plc_cells,
                                                         runs)
-    with open(filename,'r') as f:
-        txt = f.read()
+    try:
+        with open(filename,'r') as f:
+            txt = f.read()
+    finally:
+        import pdb; pdb.set_trace()
     
     dat = cPickle.loads(txt)
     
     num_flds = dat['units']['Number of fields']
+    
     if len(num_flds) != runs*plc_cells: raise Exception
     
     return num_flds

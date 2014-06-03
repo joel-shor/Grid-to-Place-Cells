@@ -7,7 +7,7 @@ import cPickle
 import logging
 
 from Simulation.simulation import run_simulation
-from params import Param as pm
+from Simulation.params import Param
 
 def combine(main, new):
     ''' Adds fields in dictionary 'new' to dictionary 'main'. '''
@@ -15,7 +15,7 @@ def combine(main, new):
     for key in main.keys():
         main[key].extend(new[key])
         
-def run_experiment(trials):
+def run_experiment2(trials,pm):
     ''' The shell function to cycle through repeated trials.'''
     
     s = time.time()
@@ -47,8 +47,41 @@ def run_experiment(trials):
     cPickle.dump(tot,open(fn,'w'))
     logging.info('Finished an experiment: %.3f', time.time()-s)
 
+def run_experiment(pm, trials):
+    ''' The shell function to cycle through repeated trials.'''
+    
+    pm.validate()
+    
+    s = time.time()
+    # Data structure that will contain the data and will be pickled
+    # to a file.
+    maps = {'Sparsity':[],
+            'Coverage':[],
+            'Representation':[]}
+    units = {'Number of fields':[],
+             'Coverage':[]}
+    fields = {'Area':[]}
+    
+    for rnd in range(trials):
+        logging.info('Trial number %i:',rnd+1)
+        maps, units, fields = run_simulation(pm)
+        
+        # Store data in file
+        tot = {'maps':maps,
+               'units':units,
+               'fields':fields}
+        fn = 'exp results size%s,modes%s,plccells%d,grdcells%d,runs%d'%(pm.L,
+                                                           str(pm.modules),
+                                                           pm.plc_cells,
+                                                           pm.grd_cells,
+                                                           rnd)
+        cPickle.dump(tot,open(fn,'w'))
+        logging.info('Finished an experiment: %.3f', time.time()-s)
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
+    pm = Param # Makes warnings go away by making pm local
     
     pm.modules = None
     #min_plcfld_size = .05
@@ -56,15 +89,15 @@ if __name__ == '__main__':
     #min_grid_size = .0001
     pm.min_grid_size = .0004 # m**2
     #min_grid_size = .01 # m**2
+    
     pm.C = 0.4
     pm.thresh = 1
     pm.f_I = 0.04/pm.thresh
     pm.f_p = pm.thresh/0.005
+    
+    
     pm.plc_cells = 500
     pm.grd_cells = 1000
-    
-    pm.L = pm.H = pm.W = 1
-    pm.validate()
 
     # Profile
     '''
@@ -74,9 +107,9 @@ if __name__ == '__main__':
     import sys; sys.exit()'''
 
     # Actually run an experiment
-    for x in [1]:
+    for x in [2,3]:
         pm.L=pm.W=pm.H=x
-        run_experiment(trials=1)
+        run_experiment(pm,trials=5)
         
         # Sends email updates if expiriments are running on a server.
         '''

@@ -10,9 +10,6 @@ import numpy as np
 from numpy.random import uniform
 import logging
 
-# Try using the cache
-from Cache.cache import try_cache, store_in_cache
-
 from time import time as tm
 
 len_range = [.3, .9]
@@ -25,21 +22,10 @@ class GridNetwork:
         
         self.X, self.Y = self._calc_grid(min_grid_size,W,H,N)
         
-        
-        self.cache_key = (N,min_grid_size,W,H,modules,len_range)
-        self.cache=None
-        
-        #s = tm()
-        #self.cache = try_cache(self.cache_key)
-
-        if self.cache is not None: 
-            logging.info('Skipping init for cache.')
-            return
-        
         self.N = N
         [_, xx, yy] = self.X.shape
         
-        if modules is None:
+        if modules is None or modules == 0:
             
             self.l = np.zeros([N,xx,yy])    # The grid length matrix
             self.rot = np.zeros([N,xx,yy])  # The rotation matrix
@@ -58,16 +44,35 @@ class GridNetwork:
                 y_range = np.sqrt(cur_l**2-cur_xoff**2)
                 self.yoff[i,:,:] = uniform(-y_range, y_range)
         else:
-            raise Exception('Modules not implemented.')
+            assert N % modules == 0
+            l_mods = uniform(len_range[0],len_range[1],modules)
+            rot_mods = uniform(0, 2.0*np.pi/3,modules)
+            
+            self.l = np.zeros([N,xx,yy])    # The grid length matrix
+            self.rot = np.zeros([N,xx,yy])  # The rotation matrix
+            self.xoff = np.zeros([N,xx,yy]) # x offset matrix
+            self.yoff = np.zeros([N,xx,yy]) # y offset matrix
+            
+            for i in range(N): 
+                cur_mod = i%modules
+                cur_l = l_mods[cur_mod]
+                self.l[i,:,:] = cur_l
+                
+                self.rot[i,:,:] = rot_mods[cur_mod]
+                
+                cur_xoff = uniform(-cur_l, cur_l)
+                self.xoff[i,:,:] = cur_xoff
+                
+                y_range = np.sqrt(cur_l**2-cur_xoff**2)
+                self.yoff[i,:,:] = uniform(-y_range, y_range)
+            assert len(np.unique(self.l)) == modules
+            assert len(np.unique(self.rot)) == modules
     
     def activity(self):
         '''
         Eq:
         1/3 * cos[ 4*pi/(sqrt(3)*l) {cos(t-rot), sin(t-rot)} DOT (x-offset)  ] for t = -pi/3, 0, pi/3
         '''
-        if self.cache is not None: 
-            logging.info('Got grid cell activity from cache.')
-            return self.cache
         
         out = np.zeros(self.l.shape)
         
@@ -80,8 +85,6 @@ class GridNetwork:
 
             #import pdb; pdb.set_trace()
             out += 1/3.0 * np.cos(pt1*(pt2*pt4+pt3*pt5))
-        
-        #store_in_cache(self.cache_key, out)
         
         return out
      
