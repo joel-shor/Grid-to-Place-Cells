@@ -6,10 +6,10 @@ Created on Sep 21, 2013
 
 @author: jshor
 '''
-import numpy as np
 from itertools import product
 import time
 import logging
+import re
 
 from Simulation.params import Param as pm
 from Simulation.simulation import run_simulation
@@ -17,19 +17,17 @@ from Cells.PlaceFields import PlaceField as pf
 
 max_fit_runs = 1
 
-from scipy.optimize import fmin_l_bfgs_b, fmin, anneal,brute
+#from scipy.optimize import fmin_l_bfgs_b, fmin, anneal,brute
 best = []
 best_mean = 10*2
 
 def _validate_params(thresh,f_I):
     return True
 
-def get(a):
-
 def fitness(a):
     ''' Fitness function for optimization
     a  = (thresh,f_I) '''
-    [thresh,f_I] = a
+    [f_I, thresh] = a
     try:
         assert _validate_params(thresh,f_I)
     except:
@@ -45,15 +43,13 @@ def fitness(a):
     assert len(maps['Coverage']) == 1
     coverage = maps['Coverage'][0]
     
-    val = 1.0/((sparsity-.7)**2+.4) + 1.0/((coverage-.99)**2+.4)
-    
-    return val
+    return sparsity, coverage
     
 fn = 'Simulation/optimize_results.txt'
 def prev_results():
     ''' Read in previous optimization results.
         Grid cells:    Place cells: 
-        C    thresh    f_I    f_p    :    [fit1, fit2,... ]'''
+        C    thresh    f_I    f_p    :    [(spars1,cov1), (spars2,cov2),... ]'''
     dat = {}
     
     try:
@@ -68,8 +64,8 @@ def prev_results():
         
         assert key not in dat
 
-        fit = [float(f) for f in fits[1:-2].split(', ')]
-        dat[key] = fit
+        fit_l = [(float(a),float(b)) for a,b in re.findall('\((.*?),(.*?)\)',fits)]
+        dat[key] = fit_l
     
     return dat
 
@@ -83,20 +79,21 @@ def grid_search():
     pm.min_plcfld_size = .005
     #min_grid_size = .0001
     pm.min_grid_size = .0004 # m**2
-    #min_grid_size = .01 # m**2
+    #pm.min_grid_size = .01 # m**2
     pm.plc_cells = 500
     pm.grd_cells = 1000
     pm.L=pm.W=pm.H=1
+
+    pm.C = .33
+    pm.f_p = 15
     
-    C = .33
-    f_p = 15
+    #f_Is = np.arange(4,7,1)
+    f_Is = [1]
     
-    pm.C = C
-    pm.f_p = f_p
+    #threshs = [.005,.006,.007,.008,.009,.01,.1,1]
+    threshs = [.05]
     
-    f_Is = np.arange(4,7,.1)
-    threshs = [.005,.006,.007,.008,.009,.01,.1,1]
-    #threshs = [.005,.006]
+    
     repeats = range(3)
     
     arr = [x for x in product(f_Is,threshs,repeats)]
@@ -104,20 +101,20 @@ def grid_search():
     for i in range(len(arr)):
         logging.warning('Round %i/%i',i+1,len(arr))
         f_I, thresh, _ = arr[i]
-        key = (C,thresh,f_I,f_p)
+        key = (pm.C,thresh,f_I,pm.f_p)
         if key in dat and len(dat[key]) >= max_fit_runs: continue
         
-        logging.warning('Starting %.3f, %.3f',f_I,thresh)
+        logging.warning('Starting f_I:%.3f, thresh:%.3f',f_I,thresh)
         s = time.time()
-        fit = fitness([f_I, thresh])
+        spars,cov = fitness([f_I, thresh])
         f = time.time()
         tot_time += f-s
         logging.warning('Took time %.3f',f-s)
         
         if key not in dat:
-            dat[key] = [fit]
+            dat[key] = [(spars,cov)]
         else:
-            dat[key].append(fit)
+            dat[key].append((spars,cov))
     
         write_to_file(dat)
 
@@ -127,7 +124,7 @@ def write_to_file(dat):
     
     with open(fn,'w') as f:
         f.write('Place cells: 500    Grid cells: 1000\n')
-        f.write('C    thresh    f_I    f_p    :    fit1, fit2,... \n')
+        f.write('C    thresh    f_I    f_p    :    (spars1,cov1), (spars2,cov2),... \n')
         tstr = '%f    %f    %f    %f    :    %s\n'
         for key,fits in dat.items():
             cur = tstr%(key[0],key[1],key[2],key[3],fits)

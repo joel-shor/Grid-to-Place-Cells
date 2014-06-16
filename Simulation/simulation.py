@@ -46,6 +46,7 @@ def run_simulation(params):
     maps['Representation'].append(PlaceField.representation(plc_fld_dat))
     
     logging.info('Finished a simulation in time: %.3f', time.time()-s)
+    import pdb; pdb.set_trace()
     return maps, units, fields
 
 

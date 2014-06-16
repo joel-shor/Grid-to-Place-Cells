@@ -90,10 +90,10 @@ if __name__ == '__main__':
     pm.min_grid_size = .0004 # m**2
     #min_grid_size = .01 # m**2
     
-    pm.C = 0.4
-    pm.thresh = 1
-    pm.f_I = 0.04/pm.thresh
-    pm.f_p = pm.thresh/0.005
+    pm.C = 0.33
+    pm.thresh = .05
+    pm.f_I = 1
+    pm.f_p = 15
     
     
     pm.plc_cells = 500
