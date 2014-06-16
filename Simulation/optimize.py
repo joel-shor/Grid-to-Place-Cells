@@ -7,6 +7,7 @@ Created on Sep 21, 2013
 @author: jshor
 '''
 from itertools import product
+from operator import itemgetter
 import time
 import logging
 import re
@@ -15,7 +16,7 @@ from Simulation.params import Param as pm
 from Simulation.simulation import run_simulation
 from Cells.PlaceFields import PlaceField as pf
 
-max_fit_runs = 1
+max_fit_runs = 3
 
 #from scipy.optimize import fmin_l_bfgs_b, fmin, anneal,brute
 best = []
@@ -84,24 +85,24 @@ def grid_search():
     pm.grd_cells = 1000
     pm.L=pm.W=pm.H=1
 
-    pm.C = .33
-    pm.f_p = 15
+    pm.C = C = .33
+    pm.f_p = f_p = 15
     
     #f_Is = np.arange(4,7,1)
-    f_Is = [1]
+    f_Is = [6]
     
     #threshs = [.005,.006,.007,.008,.009,.01,.1,1]
-    threshs = [.05]
+    threshs = [.01]
     
     
-    repeats = range(3)
+    repeats = range(1)
     
     arr = [x for x in product(f_Is,threshs,repeats)]
     
     for i in range(len(arr)):
         logging.warning('Round %i/%i',i+1,len(arr))
         f_I, thresh, _ = arr[i]
-        key = (pm.C,thresh,f_I,pm.f_p)
+        key = (C,thresh,f_I,f_p)
         if key in dat and len(dat[key]) >= max_fit_runs: continue
         
         logging.warning('Starting f_I:%.3f, thresh:%.3f',f_I,thresh)
@@ -126,8 +127,8 @@ def write_to_file(dat):
         f.write('Place cells: 500    Grid cells: 1000\n')
         f.write('C    thresh    f_I    f_p    :    (spars1,cov1), (spars2,cov2),... \n')
         tstr = '%f    %f    %f    %f    :    %s\n'
-        for key,fits in dat.items():
-            cur = tstr%(key[0],key[1],key[2],key[3],fits)
+        for key,fits in sorted(dat.items(),key=lambda x:(x[0][2],x[0][1])):
+            cur = tstr%(key[0],key[1],key[2],key[3],sorted(fits,key=lambda x:x[0]))
             f.write(cur)
 
 '''
