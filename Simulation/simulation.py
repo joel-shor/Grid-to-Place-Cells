@@ -26,7 +26,7 @@ def run_simulation(params):
     fields = {'Area':[]}
 
     grid_net = GridNetwork(pm.grd_cells, pm.min_grid_size, pm.W,pm.H, pm.modules)
-    plc_net = PlaceNetwork(pm.plc_cells, grid_net, wt_type='Monaco', C=pm.C)
+    plc_net = PlaceNetwork(pm.plc_cells, grid_net, wt_type=pm.wt_type, C=pm.C)
     acts = plc_net.activity()
     final_acts, inhibs = asymptotic_inhib(acts, pm.f_I, pm.f_p, pm.thresh)
     

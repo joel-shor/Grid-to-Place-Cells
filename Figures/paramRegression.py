@@ -8,7 +8,7 @@ Called as:
 python MakeFig.py regr
 '''
 
-import cPickle
+
 import numpy as np
 import logging
 
@@ -20,11 +20,13 @@ mpl.rcParams['lines.linewidth'] = 3
 mpl.rcParams['axes.titlesize'] = 25
 plt.rc('text', usetex=True)
 
-from Results.load import load_old
+#from Results.load import load_old as load
+from Results.load import load_new as load
 
 SHOW = True # Show the graph or save it to file
 
-
+"""
+import cPickle
 def load(runs, modes, plc_cells, size):
     filename = 'Results/old/exp results size%s,modes%s,plccells%d,runs%d'%(str(size),
                                                         str(modes),
@@ -42,7 +44,7 @@ def load(runs, modes, plc_cells, size):
     
     if len(num_flds) != runs*plc_cells: raise Exception
     
-    return num_flds
+    return num_flds """
 
 from scipy.stats import chi2
 ALPHA = .05

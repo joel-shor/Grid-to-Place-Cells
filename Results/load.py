@@ -19,14 +19,15 @@ def load_new(modes, plc_cells, size, grd_cells, *args):
                                                         str(modes),
                                                         plc_cells,
                                                         grd_cells)
+    num_flds = []
     for fn in [x for x in listdir(folder) if x.find(filename) > -1]:
         with open(join(folder,fn),'r') as f:
             txt = f.read()
         
         dat = cPickle.loads(txt)
-    
-        num_flds = dat['units']['Number of fields']
-        assert len(num_flds) == plc_cells
+        cur_num_flds = dat['units']['Number of fields']
+        assert len(cur_num_flds) == plc_cells
+        num_flds.extend(cur_num_flds)
     
     return num_flds
 
@@ -42,9 +43,6 @@ def load_old(modes, plc_cells, size, grd_cells, runs):
     
     num_flds = dat['units']['Number of fields']
     
-    try:
-        assert len(num_flds) == runs*plc_cells
-    except:
-        import pdb; pdb.set_trace()
+    assert len(num_flds) == runs*plc_cells
     
     return num_flds

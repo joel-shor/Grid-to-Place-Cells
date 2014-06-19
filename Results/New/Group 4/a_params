@@ -1,0 +1,13 @@
+pm.modules = 0
+pm.min_plcfld_size = .005
+pm.min_grid_size = .0004 # m**2
+
+pm.C = 0.33
+pm.thresh = 0.1
+pm.f_I = 7
+pm.f_p = 15
+pm.wt_type = 'Monaco updated'
+
+
+pm.plc_cells = 500
+pm.grd_cells = 1000

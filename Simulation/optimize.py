@@ -7,7 +7,6 @@ Created on Sep 21, 2013
 @author: jshor
 '''
 from itertools import product
-from operator import itemgetter
 import time
 import logging
 import re
@@ -16,7 +15,7 @@ from Simulation.params import Param as pm
 from Simulation.simulation import run_simulation
 from Cells.PlaceFields import PlaceField as pf
 
-max_fit_runs = 3
+max_fit_runs = 9
 
 #from scipy.optimize import fmin_l_bfgs_b, fmin, anneal,brute
 best = []
@@ -85,17 +84,17 @@ def grid_search():
     pm.grd_cells = 1000
     pm.L=pm.W=pm.H=1
 
-    pm.C = C = .33
+    pm.C = C = .3
     pm.f_p = f_p = 15
     
     #f_Is = np.arange(4,7,1)
-    f_Is = [6]
+    f_Is = [5.31]
     
     #threshs = [.005,.006,.007,.008,.009,.01,.1,1]
-    threshs = [.01]
+    threshs = [0.0075]
     
     
-    repeats = range(1)
+    repeats = range(9)
     
     arr = [x for x in product(f_Is,threshs,repeats)]
     
@@ -127,7 +126,7 @@ def write_to_file(dat):
         f.write('Place cells: 500    Grid cells: 1000\n')
         f.write('C    thresh    f_I    f_p    :    (spars1,cov1), (spars2,cov2),... \n')
         tstr = '%f    %f    %f    %f    :    %s\n'
-        for key,fits in sorted(dat.items(),key=lambda x:(x[0][2],x[0][1])):
+        for key,fits in sorted(dat.items(),key=lambda x:(x[0][1],x[0][2])):
             cur = tstr%(key[0],key[1],key[2],key[3],sorted(fits,key=lambda x:x[0]))
             f.write(cur)
 

@@ -6,9 +6,10 @@ against the graph of (x vs Poisson(x)).
 '''
 
 from scipy.misc import factorial
+import logging
 import numpy as np
-#from Results.load import load_old as load
-from Results.load import load_new as load
+from Results.load import load_old as load
+#from Results.load import load_new as load
 
 import matplotlib as mpl
 mpl.rcParams['font.size'] = 22
@@ -66,28 +67,31 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     
     # Read in a list of the number of fields
     #  for each place cell
+    
     plt.figure()
     max_num_flds = 0
     As= {}
+    
     for side_len in side_lens:
         num_flds = np.array(load(modes, plc_cells, side_len,grd_cells, runs))
         
         # Generate data curve that we hope looks Poisson
         x = []; y = []
+
         for num_fld in range(np.max(num_flds)+1):
             x.append(num_fld)
             y.append(1.0*np.count_nonzero(num_flds == num_fld)/len(num_flds))
         lambduh = np.average(num_flds)
+        logging.info('Best lambduh for %.1f is %.5f', side_len, lambduh)
         if side_len == 1:
             plt.plot(x,y,label='Area (m$^2$)= '+str(side_len**2))
         else:
-            plt.plot(x,y,label=side_len**2)
+            plt.plot(x,y,label=str(side_len**2))
             
         A = 1.0*lambduh/(side_len**2)
         As[side_len] = A
         if np.max(num_flds) > max_num_flds:
             max_num_flds = np.max(num_flds)
-
     
     
     '''
@@ -100,6 +104,7 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     x = range(max_num_flds+1)
     for side_len in As.keys():
         lambduh = A_best * side_len**2
+        logging.info('Best overall lambduh: %.5f',A_best)
         y = Poisson(x,lambduh)
         if side_len == As.keys()[0]:
             #plt.plot(x,y,'-.',label='\lambda = %.3f'%(lambduh,))
@@ -111,6 +116,7 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     plt.xlabel('Number of Place Fields')
     #plt.ylabel('Proportion of Cell Population')
     plt.title('Best Overall Poisson Fit')
+    #plt.xlim([0,18])
     if not SHOW:
         plt.savefig('Figures/Poisson_average_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs))
     '''
@@ -131,12 +137,14 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     plt.xlabel('Number of Place Fields')
     plt.ylabel('Proportion of Cell Population')
     plt.title('Best Poisson Fit')
+    #plt.xlim([0,18])
     if not SHOW:
         plt.savefig('Figures/Poisson_best_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs)) 
-
-def poisson_fit():     
+    
+def poisson_fit():
+    logging.basicConfig(level=logging.INFO)   
     #generate_graphs_for_total_poisson_comparison(runs=10,modes=None,plc_cells=25,grd_cells=500,side_lens=[1,2,3,4,5])
-    generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,grd_cells=1000,side_lens=[1,2,3])
+    generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,grd_cells=1000,side_lens=[1,2,3,4,5])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
     if SHOW: plt.show()

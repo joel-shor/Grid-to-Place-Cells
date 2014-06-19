@@ -10,13 +10,15 @@ def example():
     
         Called as python MakeFig.py inhib'''
     logging.basicConfig(level=logging.INFO)
-    thresh = 1
-    f_I = 0.04/thresh
-    f_p = thresh/0.005
+    thresh = .1
+    f_I = 7
+    f_p = 15
     W = 1
-    min_grid_size = .0001
+    C=.33
+    
+    min_grid_size = .0004
     grid_net = GridNetwork(1000,min_grid_size,W,W)
-    plc_net = PlaceNetwork(500,grid_net,wt_type='Monaco updated',C=.4)
+    plc_net = PlaceNetwork(500,grid_net,wt_type='Monaco updated',C=C)
     act = plc_net.activity()
     final_acts, _ = asymptotic_inhib(act,f_I,f_p,thresh)
 
