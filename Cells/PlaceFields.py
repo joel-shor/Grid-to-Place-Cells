@@ -12,13 +12,16 @@ from scipy.sparse import lil_matrix as lil
 
 class PlaceField:
     @staticmethod
-    def above_cutoff(act):
+    def above_cutoff(act, use_cutoff):
         ''' Returns a 2d binary array with 1 indicating
         activity above a threshold, 0 indicating below.
         
         Activities above the threshold are
         in the top 80% of activity. '''
         flds = np.zeros(act.shape)
+        
+        if use_cutoff is False:
+            return act > 0
         max_act = np.amax(act)
         if max_act == 0:
             return flds

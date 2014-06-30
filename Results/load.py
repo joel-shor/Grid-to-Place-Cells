@@ -29,6 +29,7 @@ def load_new(modes, plc_cells, size, grd_cells, *args):
         assert len(cur_num_flds) == plc_cells
         num_flds.extend(cur_num_flds)
     
+    assert len(num_flds) != 0
     return num_flds
 
 def load_old(modes, plc_cells, size, grd_cells, runs):

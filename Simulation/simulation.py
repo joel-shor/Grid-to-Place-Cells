@@ -33,7 +33,7 @@ def run_simulation(params):
     mesh_pts = acts[0].shape[0]
     plc_fld_dat = []
     for i in range(pm.plc_cells):
-        flds = PlaceField.above_cutoff(final_acts[i])
+        flds = PlaceField.above_cutoff(final_acts[i], pm.use_cutoff)
         num_flds, layout, fld_areas = PlaceField.check_size(flds,pm.W,pm.H,
                                                             pm.min_plcfld_size,mesh_pts)
         fields['Area'].extend(fld_areas)

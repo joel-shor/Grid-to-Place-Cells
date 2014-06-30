@@ -11,13 +11,14 @@ def example():
     logging.basicConfig(level=logging.INFO)
     PlaceN = 500
     GridN = 1000
-    C=.4
-    thresh = 1
-    f_I = 0.04/thresh
-    f_p = thresh/0.005
+    C=.3
+    thresh = .0075
+    f_I = 5.31
+    f_p = 15
     W = 1
-    min_grid_size = .0001
+    min_grid_size = .0004
     min_plcfld_size = .005
+
     
     grid_net = GridNetwork(GridN, min_grid_size, W,W, None)
     plc_net = PlaceNetwork(PlaceN, grid_net, wt_type='Monaco', C=C)
@@ -27,7 +28,7 @@ def example():
     mesh_pts = acts[0].shape[0]
     for i in range(PlaceN):
         logging.info('Starting cycle %i',i)
-        flds = PlaceField.above_cutoff(final_acts[i])
+        flds = PlaceField.above_cutoff(final_acts[i], use_cutoff=False)
         num_flds, layout, _ = PlaceField.check_size(flds,W,W,min_plcfld_size,mesh_pts)
         no_min, _, _ = PlaceField.check_size(flds,W,W,0,mesh_pts)
         if no_min != num_flds:

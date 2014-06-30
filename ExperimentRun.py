@@ -74,7 +74,7 @@ def run_experiment(pm, trials):
                                                            str(pm.modules),
                                                            pm.plc_cells,
                                                            pm.grd_cells,
-                                                           rnd)
+                                                           rnd+10)
         cPickle.dump(tot,open(fn,'w'))
         logging.info('Total experiment time so far: %.3f', time.time()-s)
 
@@ -83,19 +83,16 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     pm = Param # Makes warnings go away by making pm local
     
-    pm.modules = 0
-    #min_plcfld_size = .05
+    pm.modules = None
     pm.min_plcfld_size = .005
-    #min_grid_size = .0001
     pm.min_grid_size = .0004 # m**2
-    #min_grid_size = .01 # m**2
     
-    pm.C = 0.33
-    pm.thresh = 0.1
-    pm.f_I = 7
+    pm.C = 0.30
+    pm.thresh = 0.0075
+    pm.f_I = 5.31
     pm.f_p = 15
-    
-    pm.wt_type = 'Monaco updated'
+    pm.wt_type = 'Monaco'
+    pm.use_cutoff = False
     
     
     pm.plc_cells = 500
@@ -109,9 +106,9 @@ if __name__ == '__main__':
     import sys; sys.exit()'''
 
     # Actually run an experiment
-    for x in [1,2,2.5]:
+    for x in [3]:
         pm.L=pm.W=pm.H=x
-        run_experiment(pm,trials=32)
+        run_experiment(pm,trials=15)
         
         # Sends email updates if expiriments are running on a server.
         '''
