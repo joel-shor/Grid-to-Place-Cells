@@ -84,7 +84,8 @@ if __name__ == '__main__':
     pm = Param # Makes warnings go away by making pm local
     
     pm.modules = None
-    pm.min_plcfld_size = .005
+    #pm.min_plcfld_size = .005
+    pm.min_plcfld_size = 0.0
     pm.min_grid_size = .0004 # m**2
     
     pm.C = 0.30

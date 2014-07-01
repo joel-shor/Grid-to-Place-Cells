@@ -72,14 +72,15 @@ USAGE
 
     # Setup argument parser
     parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument('act', choices=['estInp','showfull','showcond'])
+    parser.add_argument('act', choices=['estInp','showfull','showcond', 'adj',
+                                        'showadj'])
     
     # Process arguments
     args = parser.parse_args()
 
     act = args.act
     if act == 'estInp':
-        from DensityEstimation.InputDensityEstimation import run
+        from DensityEstimation.collectSameLocData import run
         run()
     elif act == 'showfull':
         from DensityEstimation.Show import show_full
@@ -87,6 +88,12 @@ USAGE
     elif act == 'showcond':
         from DensityEstimation.Show import show_cond
         show_cond()
+    elif act == 'adj':
+        from DensityEstimation.collectAdjacentData import run as rn
+        rn()
+    elif act == 'showadj':
+        from DensityEstimation.Show import show_adj
+        show_adj()
 
 if __name__ == "__main__":
     sys.exit(main())

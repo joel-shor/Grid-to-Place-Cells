@@ -8,9 +8,9 @@ against the graph of (x vs Poisson(x)).
 from scipy.misc import factorial
 import logging
 import numpy as np
-#from Results.load import load_old as load
-from Results.load import load_new as load
 
+from Results.load import load_new as load
+#from Results.load import load_old as load
 import matplotlib as mpl
 mpl.rcParams['font.size'] = 22
 mpl.rcParams['lines.linewidth'] = 3
@@ -94,7 +94,7 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
             max_num_flds = np.max(num_flds)
     
     
-    ''''''
+    '''
     # Finally, do the average best fit poisson curves
     A_avg = np.average(As.values())
     A_best = calc_best_avg_A(runs, modes, plc_cells,side_lens, A_avg, grd_cells)
@@ -119,11 +119,11 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     #plt.xlim([0,18])
     if not SHOW:
         plt.savefig('Figures/Poisson_average_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs))
-    
+    '''
     
     
     # Now do the theoretical best fit poisson curves
-    '''
+    ''''''
     x = range(max_num_flds+1)
     for side_len, A in As.items():
         lambduh = A * side_len**2
@@ -140,11 +140,12 @@ def generate_graphs_for_total_poisson_comparison(runs, modes, plc_cells,side_len
     #plt.xlim([0,18])
     if not SHOW:
         plt.savefig('Figures/Poisson_best_fit_curves_plccells_%d_runs_%d.png'%(plc_cells,runs)) 
-    '''
+    
 def poisson_fit():
-    logging.basicConfig(level=logging.INFO)   
+    logging.basicConfig(level=logging.INFO)
+    
     #generate_graphs_for_total_poisson_comparison(runs=10,modes=None,plc_cells=25,grd_cells=500,side_lens=[1,2,3,4,5])
-    generate_graphs_for_total_poisson_comparison(runs=15,modes=None,plc_cells=500,grd_cells=1000,side_lens=[1,2,3])
+    generate_graphs_for_total_poisson_comparison(runs=25,modes=None,plc_cells=500,grd_cells=1000,side_lens=[1,2,2.5, 3])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=500,side_lens=[1,2,3,4,5])
     #generate_graphs_for_total_poisson_comparison(runs=32,modes=None,plc_cells=1500,side_lens=[1,2,3])
     if SHOW: plt.show()

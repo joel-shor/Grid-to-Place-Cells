@@ -14,7 +14,7 @@ from os.path import join
 
 
 def load_new(modes, plc_cells, size, grd_cells, *args):
-    folder = 'Results/New'
+    folder = 'Results/New/Group 5'
     filename = 'exp results size%s,modes%s,plccells%d,grdcells%i'%(str(size),
                                                         str(modes),
                                                         plc_cells,
