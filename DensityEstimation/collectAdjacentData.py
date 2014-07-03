@@ -36,7 +36,7 @@ def run():
     
     
     tot=400
-    for big_rnd in range(30,50):
+    for big_rnd in range(1,50):
         results = []
         for rnd in range(tot):
             logging.info('Round %i/%i',rnd+1,tot)
@@ -46,7 +46,7 @@ def run():
             
             midx = int(acts.shape[1]/2)
             midy = int(acts.shape[2]/2)
-            act_l = acts[0,midx-1:midx+1,midy-1:midy+1]
+            act_l = acts[0,midx-10:midx+10+1,midy-10:midy+10+1]
             results.append(act_l)
         
         with open('adjacent_data'+str(big_rnd),'w') as f:

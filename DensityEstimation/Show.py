@@ -21,9 +21,15 @@ def show_full():
     plt.show()
 
 def show_adj():
+    ''' Shows two rows of distributions. The top row gives
+        the distribution of the input activity to place cells
+        at various spatial locations. The second row shows
+        the same distributions conditioned on the value of
+        the (0,0) activity taking a certain value. '''
+    
     results = load_adj()
 
-    import pdb; pdb.set_trace()
+
     acts = [x[0,0] for x in results]
     plt.subplot(2,1,1)
     count, bins, _ = plt.hist(acts,bins=40,normed=Normed)
@@ -33,35 +39,36 @@ def show_adj():
     mn, std = gaussian(acts)
     plt.plot(xs,norm.pdf(xs,mn,std))
     mx_i = np.argmax(count)
-    
-    nb = [x[0,1] for x in results]
-    plt.subplot(2,1,2)
-    plt.hist(nb,bins=40,normed=Normed)
-    plt.title('Original dist. Pts: %i'%(len(nb),))
-    xs = np.linspace(xlm[0],xlm[1],1000)
-    mn, std = gaussian(acts)
-    plt.plot(xs,norm.pdf(xs,mn,std))
-    
-    plt.figure()
-    plt.subplot(2,3,1)
-    plt.hist(acts,bins=40,normed=Normed)
-    plt.xlim(xlm)
     iss = get_iss(mx_i, bins, acts)
     
-    cur_plot = 1
-    for xdelt in range(2):
-        for ydelt in range(2):
-            if xdelt == 0 and ydelt == 0: continue
-            plt.subplot(2,3,3+cur_plot)
-            cur_plot += 1
-            cur_acts = [x[xdelt,ydelt] for x in results[iss]]
-
-            plt.hist(cur_acts,bins=bins,normed=Normed)
+    plt.figure()
+    width = 10
+    plt.subplot(2,width**2,1)
     
-            mn, std = gaussian(cur_acts)
-            plt.plot(xs,norm.pdf(xs,mn,std))
-            plt.title('Pts: %i'%(len(cur_acts)))
-            plt.xlim(xlm)
+    for delt in range(width):
+        plt.subplot(2,width,1+delt)
+        cur_acts = [x[delt*2,delt*2] for x in results]
+
+        plt.hist(cur_acts,bins=bins,normed=Normed)
+
+        mn, std = gaussian(cur_acts)
+        plt.plot(xs,norm.pdf(xs,mn,std))
+        plt.title('(%i,%i) O'%(delt*2,delt*2))
+        plt.xlim(xlm)
+    
+    
+    for delt in range(width):
+        plt.subplot(2,width,width+1+delt)
+        cur_acts = [x[delt,delt] for x in results[iss]]
+
+        plt.hist(cur_acts,bins=bins,normed=Normed)
+
+        mn, std = gaussian(cur_acts)
+        plt.plot(xs,norm.pdf(xs,mn,std))
+        plt.title('(%i,%i) C'%(delt,delt))
+        plt.xlim(xlm)
+    
+    plt.axis(tight=True)
     plt.show()
     
     

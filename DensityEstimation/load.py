@@ -8,7 +8,7 @@ import numpy as np
 
 def _load(base):
     results = []
-    for i in range(1,23):
+    for i in range(50):
         with open('DensityEstimation/Results/'+base+str(i),'r') as f:
             results.extend(cPickle.load(f))
     print 'Tot points: '+str(len(results))
