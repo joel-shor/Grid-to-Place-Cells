@@ -1,6 +1,8 @@
 *.pyc
 *~
-.*
+.project
+.pydevproject
+.idea
 *.png
 data/*
 .settings
